@@ -16,38 +16,43 @@ def get_articles():
     '''
 
     result = requests.get(url)
-    soup = BeautifulSoup(result.content, "lxml")
+    soup = BeautifulSoup(result.content, "html.parser")
 
-    main_divs = soup.find_all("li", "item media_item")
+    card_list = []
+    main_divs = soup.find_all("li", "media_item")
 
+    # Go through all list items and scrape relevant information
     for div in main_divs:
 
-        anchor = div.find("a", "item_link")
-
-        article_id = anchor['data-id']
+        card_dict = {}
+        card_dict['article_id'] = div.find("a", "item_link")['data-id']
 
         #If a record already exists, skip it
-        if PocketEntry.query.filter_by(article_id=article_id).first(): continue 
+        if PocketEntry.query.filter_by(article_id=card_dict['article_id']).first(): continue 
 
-        link_url = anchor['data-saveurl']
+        card_dict['link_url'] = div.find("a", "item_link")['data-saveurl']
+        card_dict['thumbnail_url'] = div.find('div', 'item_image')['data-thumburl']
+        card_dict['content_domain'] = div.find('div', 'item_content').find('cite').find('a').text
+        card_dict['content_date_published'] = div.find('div', 'item_content').find('cite').find('span', 'read_time').text
+        card_dict['content_title'] = div.find('div', 'item_content').find('h3').find('a').text
+        card_dict['content_excerpt'] = div.find('div', 'item_content').find('p', 'excerpt').text
+        card_dict['created_date'] = datetime.now()
+        card_list.append(card_dict)
 
-        image_div = div.find('div', 'item_image')
-        thumbnail_url = image_div['data-thumburl']
+    # Reverse order of articles as they were added. The most recent articles are being read in first, but they need to be saved as entries to the database backwards creating a stack instead
+    # of a queue in order to save/show up in the right order.
+    for article in reversed(card_list):
+        write_to_db(article['article_id'], article['link_url'], article['thumbnail_url'], article['content_domain'], article['content_date_published'],
+                article['content_title'], article['content_excerpt'], article['created_date'])
 
-        content = div.find('div', 'item_content')
-        content_domain = content.find('cite').find('a').text
-        content_title = content.find('h3').find('a').text
-        content_excerpt = content.find('p', 'excerpt').text
 
-        created_date = datetime.now()
-        write_to_db(article_id, link_url, thumbnail_url, content_domain, content_title, content_excerpt, created_date)
-
-def write_to_db(article_id, url, thumbnail_url, content_domain, content_title, content_excerpt, created_date):
+def write_to_db(article_id, url, thumbnail_url, content_domain, content_date_published, content_title, content_excerpt, created_date):
 
     #Takes a list of data and writes to database
     new_entry = PocketEntry(article_id=article_id,
             url=url,
             thumbnail_url=thumbnail_url,
+            content_date_published=content_date_published,
             content_domain=content_domain,
             content_title=content_title,
             content_excerpt=content_excerpt,
@@ -57,6 +62,7 @@ def write_to_db(article_id, url, thumbnail_url, content_domain, content_title, c
 
         db.session.add(new_entry)
         db.session.commit()
+        print("New Entry Added")
 
     #I cannot actually get this to work without adding more packages seemingly because this exception cannot be caught until after a commit happens
     except exc.IntegrityError as error:
