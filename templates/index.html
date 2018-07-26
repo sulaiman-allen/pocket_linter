@@ -1,0 +1,74 @@
+<!doctype html>
+<html>
+    <head>
+        <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='bower_components/bootstrap/dist/css/bootstrap.min.css') }}">
+        <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/index.css') }}">
+
+    </head>
+    <body>
+        <title>Pocket Linter</title>
+        <div class="jumbotron headerSpacing">
+            <h2>Pocket Linter</h2>
+            <p class="lead">Most popular stories based upon pocket clippings.</p>
+        </div>
+        <div class="mainBody" style="margin: auto; width: 70%">
+
+
+			{% for entry_row in results | batch(3, '&nbsp;') %}
+			<div class="row">
+				{% for entry in entry_row %}
+
+				<div class="col-sm-4">
+					<div class="card">
+						<div class="card-body">
+							<a href="{{entry.url}}"><img class="card-img-top" src="{{entry.thumbnail_url}}"></a>
+                            <div class="row" style="padding-top: 10px; padding-bottom: 10px;">
+                                <h6 class="col-sm-6 card-title">{{ entry.content_domain}}</h6>
+                                <h6 class="col-sm-6 card-title" >{{ entry.content_date_published }}</h6>
+                            </div>
+                            <a  href="{{entry.url}}"><h5 class="card-title", style="color: black" >{{entry.content_title}}</h5></a>
+							<p class="card-text">{{ entry.content_excerpt }}</p>
+						</div>
+					</div>
+				</div>
+
+				{% endfor %}
+			</div>
+			{% endfor %}
+
+
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    {% if page_number == 1 %}
+                        <li class="page-item"><a class="page-link btn-disable" href="#">Previous</a></li>
+                    {% else %}
+                    <li class="page-item"><a class="page-link" href="/?page_num={{page_number - 1}}">Previous</a></li>
+                    {% endif %}
+
+
+                    {% for number in range(1, pages_available + 1) %}
+                        {% if number == page_number %}
+                            <li class="page-item active"><a class="page-link" href="/?page_num={{ number }}">{{ number }}</a></li>
+                        {% else %}
+                            <li class="page-item"><a class="page-link" href="/?page_num={{ number }}">{{ number }}</a></li>
+                        {% endif %}
+
+                    {% endfor %}
+
+
+                    {% if page_number == pages_available %}
+                        <li class="page-item"><a class="page-link btn-disable" href="#">Next</a></li>
+                    {% else %}
+                        <li class="page-item"><a class="page-link" href="/?page_num={{page_number + 1}}">Next</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+
+
+
+        <script type="text/javascript" src="{{ url_for('static',filename='bower_components/jquery/dist/jquery.min.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static',filename='bower_components/bootstrap/dist/js/bootstrap.min.js') }}"></script>
+    </body>
+<html>
+    
