@@ -45,15 +45,55 @@
                     <li class="page-item"><a class="page-link" href="/?page_num={{page_number - 1}}">Previous</a></li>
                     {% endif %}
 
+                    <!-- If more than 7 pages are available --!>
+                    {% if pages_available > 7 %}
 
-                    {% for number in range(1, pages_available + 1) %}
-                        {% if number == page_number %}
-                            <li class="page-item active"><a class="page-link" href="/?page_num={{ number }}">{{ number }}</a></li>
-                        {% else %}
-                            <li class="page-item"><a class="page-link" href="/?page_num={{ number }}">{{ number }}</a></li>
+                        {% for number in range(1, 4) %}
+                            {% if number == page_number %}
+                                <li class="page-item active"><a class="page-link" href="/?page_num={{ number }}">{{ number }}</a></li>
+                            {% else %}
+                                <li class="page-item"><a class="page-link" href="/?page_num={{ number }}">{{ number }}</a></li>
+                            {% endif %}
+
+                        {% endfor %}
+
+                            <li class="page-item"><a class="page-link" href="">...</a></li>
+
+                        <!-- If the current page isnt 1-3 --!>
+                        {% if page_number > 3 and page_number < pages_available - 2 %}
+                            {% for number in range(page_number, page_number + 3) %}
+                                {% if number == page_number %}
+                                    <li class="page-item active"><a class="page-link" href="/?page_num={{ number }}">{{ number }}</a></li>
+                                {% else %}
+                                    <li class="page-item"><a class="page-link" href="/?page_num={{ number }}">{{ number }}</a></li>
+                                {% endif %}
+
+                            {% endfor %}
+                            <li class="page-item"><a class="page-link" href="">...</a></li>
                         {% endif %}
 
-                    {% endfor %}
+                        <!-- Show last 3 pages regardless --!>
+                        {% for number in range(pages_available - 2, pages_available + 1) %}
+                            {% if number == page_number %}
+                                <li class="page-item active"><a class="page-link" href="/?page_num={{ number }}">{{ number }}</a></li>
+                            {% else %}
+                                <li class="page-item"><a class="page-link" href="/?page_num={{ number }}">{{ number }}</a></li>
+                            {% endif %}
+
+                        {% endfor %}
+
+
+
+                    {% else %}
+                        {% for number in range(1, pages_available + 1) %}
+                            {% if number == page_number %}
+                                <li class="page-item active"><a class="page-link" href="/?page_num={{ number }}">{{ number }}</a></li>
+                            {% else %}
+                                <li class="page-item"><a class="page-link" href="/?page_num={{ number }}">{{ number }}</a></li>
+                            {% endif %}
+
+                        {% endfor %}
+                    {% endif %}
 
 
                     {% if page_number == pages_available %}
