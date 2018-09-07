@@ -5,7 +5,7 @@ from controllers import get_data_from_database, get_number_of_pages_to_show
 
 RESULTS_PER_PAGE = 24
 
-@app.route('/')
+@application.route('/')
 def index():
     '''
         Main page
