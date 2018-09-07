@@ -1,5 +1,5 @@
 from datetime import datetime
-from app import app, db
+from app import application, db
 from models import PocketEntry
 from bs4 import BeautifulSoup
 from sqlalchemy import exc
@@ -8,7 +8,7 @@ import requests
 
 URL = 'https://getpocket.com/explore/trending'
 
-@app.cli.command()
+@application.cli.command()
 #@click.argument('name')
 def get_articles():
     '''

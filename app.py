@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 BASE_DIR = abspath(join(dirname(__file__), 'database'))
 
-app = Flask(__name__)
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////' + BASE_DIR +'/database.db'
-db = SQLAlchemy(app)
+application = Flask(__name__)
+application.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+application.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////' + BASE_DIR +'/database.db'
+db = SQLAlchemy(application)

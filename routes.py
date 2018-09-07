@@ -1,5 +1,5 @@
 from flask import render_template, request
-from app import app, db
+from app import application, db
 from cli import get_articles
 from controllers import get_data_from_database, get_number_of_pages_to_show
 
@@ -17,3 +17,6 @@ def index():
                            page_number=page_number,
                            results=get_data_from_database(page_number, results_per_page=RESULTS_PER_PAGE), # Load freshly downloaded information from database
                            pages_available=get_number_of_pages_to_show(RESULTS_PER_PAGE)) # Get the total number of pages available to show links for
+
+    if __name__ == "__main__":
+            application.run(host='0.0.0.0', port='8080')
