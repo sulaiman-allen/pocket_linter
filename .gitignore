@@ -1,5 +1,5 @@
 *.swp
-database/*
+database/database.db
 __pycache__
 bower_components
 virtual_env
