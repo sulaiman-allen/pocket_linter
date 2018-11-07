@@ -1,4 +1,4 @@
 #!/bin/sh
 
-export FLASK_APP=routes.py
+export ENV FLASK_APP=/usr/src/pocket_linter/routes.py
 flask get_articles

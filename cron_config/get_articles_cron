@@ -1,2 +1,0 @@
-0 * * * * /bin/sh /usr/src/pocket_linter/get_articles.sh
-
